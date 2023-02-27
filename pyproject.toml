@@ -37,4 +37,4 @@ exclude = [
 "__init__.py" = ["F401"]
 
 [tool.ruff.isort]
-known-first-party = ["project_zeus"]
+known-first-party = ["midigpt"]
