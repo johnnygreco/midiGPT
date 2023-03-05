@@ -4,11 +4,12 @@ __all__ = ["Configure"]
 
 
 class Configure(BaseModel):
+    vocab_size: int
     batch_size: int = 32
     context_length: int = 64
     embedding_size: int = 32
     num_heads: int = 4
-    num_layers: int = 4
+    num_blocks: int = 4
     attn_dropout_prob: float = 0.1
     embed_dropout_prob: float = 0.1
 
