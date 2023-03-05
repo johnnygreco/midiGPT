@@ -1,17 +1,17 @@
 from pydantic import BaseModel, root_validator
 
-__all__ = ["Configure"]
+__all__ = ["ModelConfigure", "TrainConfigure"]
 
 
-class Configure(BaseModel):
+class ModelConfigure(BaseModel):
     vocab_size: int
-    batch_size: int = 32
     context_length: int = 64
     embedding_size: int = 32
     num_heads: int = 4
     num_blocks: int = 4
     attn_dropout_prob: float = 0.1
     embed_dropout_prob: float = 0.1
+    device: str = "auto"
 
     @root_validator
     def check_embedding_size_num_heads_ratio(cls, values):
@@ -20,3 +20,11 @@ class Configure(BaseModel):
         if embedding_size % num_heads != 0:
             raise ValueError(f"{embedding_size=} is not divisible by {num_heads=}")
         return values
+
+
+class TrainConfigure(ModelConfigure):
+    batch_size: int = 32
+    learning_rate: float = 5e-4
+    num_iters: int = 5000
+    eval_iters: int = 200
+    eval_interval: int = 500

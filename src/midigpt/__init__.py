@@ -1,2 +1,2 @@
-from .config import Configure
+from .config import ModelConfigure, TrainConfigure
 from .gpt import GPT

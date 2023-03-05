@@ -4,14 +4,15 @@ import torch
 import torch.nn as nn
 from torch.nn import functional as F
 
-from .components import Block, device
-from .config import Configure
+from . import utils
+from .components import Block
+from .config import ModelConfigure
 
 __all__ = ["GPT"]
 
 
 class GPT(nn.Module):
-    def __init__(self, config: Configure):
+    def __init__(self, config: ModelConfigure):
         super().__init__()
         self.token_embedding_table = nn.Embedding(config.vocab_size, config.embedding_size)
         self.position_embedding_table = nn.Embedding(config.context_length, config.embedding_size)
@@ -20,6 +21,7 @@ class GPT(nn.Module):
         self.reproject_to_vocab = nn.Linear(config.embedding_size, config.vocab_size)
         self.apply(self._init_weights)
         self.context_length = config.context_length
+        self.device = utils.get_auto_device() if config.device == "auto" else config.device
 
     def _init_weights(self, module):
         if isinstance(module, (nn.Linear, nn.Embedding)):
@@ -27,10 +29,14 @@ class GPT(nn.Module):
             if hasattr(module, "bias") and module.bias is not None:
                 torch.nn.init.zeros_(module.bias)
 
+    @property
+    def num_params(self):
+        return sum(p.numel() for p in self.parameters())
+
     def forward(self, x: torch.Tensor, targets: Optional[torch.Tensor] = None):
         B, T = x.shape
         token_embedding = self.token_embedding_table(x)  # (B, T, C)
-        position_embedding = self.position_embedding_table(torch.arange(T, device=device))  # (T, C)
+        position_embedding = self.position_embedding_table(torch.arange(T, device=self.device))  # (T, C)
         x = token_embedding + position_embedding  # (B, T, C)
         x = self.blocks(x)  # (B, T, C)
         x = self.final_layer_norm(x)  # (B, T, C)

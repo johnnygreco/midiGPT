@@ -4,11 +4,9 @@ import torch
 import torch.nn as nn
 from torch.nn import functional as F
 
-from .config import Configure
+from .config import ModelConfigure
 
-__all__ = ["CasualMultiHeadAttention", "Block", "FeedForward", "device"]
-
-device = "cuda" if torch.cuda.is_available() else "cpu"
+__all__ = ["CasualMultiHeadAttention", "Block", "FeedForward"]
 
 
 class GELU(nn.Module):
@@ -22,7 +20,7 @@ class GELU(nn.Module):
 
 
 class CasualMultiHeadAttention(nn.Module):
-    def __init__(self, config: Configure) -> None:
+    def __init__(self, config: ModelConfigure) -> None:
         super().__init__()
         q_k_v_size = 3 * config.embedding_size
         self.attn = nn.Linear(config.embedding_size, q_k_v_size)
@@ -56,7 +54,7 @@ class CasualMultiHeadAttention(nn.Module):
 
 
 class FeedForward(nn.Module):
-    def __init__(self, config: Configure) -> None:
+    def __init__(self, config: ModelConfigure) -> None:
         super().__init__()
         self.net = nn.Sequential(
             nn.Linear(config.embedding_size, 4 * config.embedding_size),
@@ -70,7 +68,7 @@ class FeedForward(nn.Module):
 
 
 class Block(nn.Module):
-    def __init__(self, config: Configure):
+    def __init__(self, config: ModelConfigure):
         super().__init__()
         self.layer_norm_1 = nn.LayerNorm(config.embedding_size)
         self.multi_head_self_attention = CasualMultiHeadAttention(config)
