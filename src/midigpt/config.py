@@ -1,3 +1,5 @@
+from typing import Optional
+
 from pydantic import BaseModel, root_validator
 
 __all__ = ["ModelConfigure", "TrainConfigure"]
@@ -28,3 +30,5 @@ class TrainConfigure(ModelConfigure):
     num_iters: int = 5000
     eval_iters: int = 200
     eval_interval: int = 500
+    num_epochs: int = 5
+    batches_per_epoch: Optional[int] = None

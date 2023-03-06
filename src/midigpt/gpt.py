@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import Optional, Union
 
 import torch
 import torch.nn as nn
@@ -6,13 +6,13 @@ from torch.nn import functional as F
 
 from . import utils
 from .components import Block
-from .config import ModelConfigure
+from .config import ModelConfigure, TrainConfigure
 
 __all__ = ["GPT"]
 
 
 class GPT(nn.Module):
-    def __init__(self, config: ModelConfigure):
+    def __init__(self, config: Union[ModelConfigure, TrainConfigure]):
         super().__init__()
         self.token_embedding_table = nn.Embedding(config.vocab_size, config.embedding_size)
         self.position_embedding_table = nn.Embedding(config.context_length, config.embedding_size)
