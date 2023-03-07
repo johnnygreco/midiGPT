@@ -30,5 +30,5 @@ class TrainConfigure(ModelConfigure):
     num_iters: int = 5000
     eval_iters: int = 200
     eval_interval: int = 500
-    num_epochs: int = 5
+    num_epochs: int = 3
     batches_per_epoch: Optional[int] = None

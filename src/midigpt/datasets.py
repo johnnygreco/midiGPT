@@ -1,17 +1,21 @@
+from typing import List, Type, Union
+
 import torch
 from torch.utils.data import Dataset
+
+from .config import ModelConfigure, TrainConfigure
 
 __all__ = ["DatasetType", "TextCharacterDataset"]
 
 
 class TextCharacterDataset(Dataset):
-    def __init__(self, text_corpus: str, context_length: int):
+    def __init__(self, text_corpus: str, vocabulary: List[str], config: Union[ModelConfigure, TrainConfigure]):
         self.text_corpus = text_corpus
-        self.vocabulary = sorted(list(set(text_corpus)))
+        self.vocabulary = vocabulary
         self.vocab_size = len(self.vocabulary)
         self.str_to_int = {s: i for i, s in enumerate(self.vocabulary)}
         self.int_to_str = {i: s for i, s in enumerate(self.vocabulary)}
-        self.context_length = context_length
+        self.context_length = config.context_length
 
     def __len__(self):
         return len(self.text_corpus) - self.context_length
@@ -24,4 +28,4 @@ class TextCharacterDataset(Dataset):
         return x, y
 
 
-DatasetType = TextCharacterDataset
+DatasetType = Type[TextCharacterDataset]
