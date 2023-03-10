@@ -38,3 +38,10 @@ exclude = [
 
 [tool.ruff.isort]
 known-first-party = ["midigpt"]
+
+[tool.semantic_release]
+branch = "main"
+version_variable = [
+    "src/midigpt/__init__.py:__version__",
+    "setup.py:__version__"
+]
