@@ -6,7 +6,7 @@ if os.path.isfile("VERSION"):
     with open("VERSION") as version:
         __version__ = version.read().strip("v")
 else:
-    __version__ = "0.0.1-beta.2"
+    __version__ = "0.0.1-beta.3"
 
 with open("README.md", "r") as fh:
     long_description = fh.read() or ""
