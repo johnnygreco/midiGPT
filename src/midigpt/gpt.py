@@ -34,6 +34,15 @@ class GPT(nn.Module):
     def num_params(self):
         return sum(p.numel() for p in self.parameters())
 
+    @classmethod
+    def from_checkpoint(cls, path: Union[str, Path]):
+        checkpoint = torch.load(path)
+        config = checkpoint["model_config"]
+        model = cls(ModelConfigure(**config))
+        model.load_state_dict(checkpoint["model_state_dict"])
+        model.to(utils.get_auto_device() if config["device"] == "auto" else config["device"])
+        return model
+
     def forward(self, x: torch.LongTensor, targets: Optional[torch.LongTensor] = None):
         token_embedding = self.token_embedding_table(x)  # (B, T, C)
         position_embedding = self.position_embedding_table(torch.arange(x.shape[1], device=self.device))  # (T, C)
@@ -56,6 +65,7 @@ class GPT(nn.Module):
         temperature: float = 1.0,
         do_sample: bool = False,
         top_k: Optional[int] = None,
+        as_list: bool = False,
     ):
         idx = torch.as_tensor(idx, dtype=torch.long, device=self.device)[None, ...]
         changed_training_mode = False
@@ -80,7 +90,7 @@ class GPT(nn.Module):
             idx = torch.cat((idx, idx_next), dim=1)
         if changed_training_mode:
             self.train()
-        return idx
+        return idx.cpu().squeeze().tolist() if as_list else idx
 
     def save(self, path: Union[str, Path]):
         torch.save(self.state_dict(), path)

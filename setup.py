@@ -11,22 +11,16 @@ else:
 with open("README.md", "r") as fh:
     long_description = fh.read() or ""
 
-# with open("requirements.txt", "r") as f:
-#     install_requires = f.read().splitlines()
-
-# extra_requires = {}
-
-# with open("requirements-dev.txt", "r") as f:
-#     extra_requires["dev"] = f.read().splitlines()
+with open("requirements.txt", "r") as f:
+    install_requires = f.read().splitlines()
 
 setup(
     name="midigpt",
     version=__version__,
-    description="midiGPT: A MIDI decoder-only midi transformer model",
+    description="midiGPT: A MIDI Music Generation Library",
     long_description=long_description,
     packages=find_packages("src"),
     package_dir={"": "src"},
     python_requires=">=3.8",
-    # install_requires=install_requires,
-    # extra_requires=extra_requires,
+    install_requires=install_requires,
 )

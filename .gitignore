@@ -143,4 +143,5 @@ dmypy.json
 local_data/
 sandbox/
 scratch/
+checkpoints/
 .DS_Store

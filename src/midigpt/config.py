@@ -33,4 +33,5 @@ class TrainConfigure(ModelConfigure):
     num_epochs: int = 3
     batches_per_epoch: Optional[int] = None
     checkpoint_path: Union[str, Path] = Path("checkpoints")
-    save_per_epoch_checkpoints: bool = True
+    save_all_checkpoints: bool = False
+    overwrite_checkpoints: bool = True
