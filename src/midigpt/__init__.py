@@ -5,4 +5,4 @@ from .config import ModelConfigure, TrainConfigure
 from .gpt import GPT
 from .trainer import Trainer
 
-__version__ = "0.0.1-beta.4"
+__version__ = "0.0.1-beta.5"
