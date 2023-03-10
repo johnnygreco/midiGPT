@@ -1,4 +1,5 @@
-from typing import Optional
+from pathlib import Path
+from typing import Optional, Union
 
 from pydantic import BaseModel, root_validator
 
@@ -27,8 +28,9 @@ class ModelConfigure(BaseModel):
 class TrainConfigure(ModelConfigure):
     batch_size: int = 32
     learning_rate: float = 5e-4
-    num_iters: int = 5000
     eval_iters: int = 200
     eval_interval: int = 500
     num_epochs: int = 3
     batches_per_epoch: Optional[int] = None
+    checkpoint_path: Union[str, Path] = Path("checkpoints")
+    save_per_epoch_checkpoints: bool = True

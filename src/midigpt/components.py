@@ -6,7 +6,7 @@ from torch.nn import functional as F
 
 from .config import ModelConfigure
 
-__all__ = ["CasualMultiHeadAttention", "Block", "FeedForward"]
+__all__ = ["CasualMultiHeadAttention", "CasualAttentionBlock", "FeedForward"]
 
 
 class GELU(nn.Module):
@@ -64,7 +64,7 @@ class FeedForward(nn.Module):
         return self.net(x)
 
 
-class Block(nn.Module):
+class CasualAttentionBlock(nn.Module):
     def __init__(self, config: ModelConfigure):
         super().__init__()
         self.layer_norm_1 = nn.LayerNorm(config.embedding_size)
