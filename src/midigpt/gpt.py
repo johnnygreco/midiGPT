@@ -19,7 +19,8 @@ class GPT(nn.Module):
         self.position_embedding_table = nn.Embedding(config.context_length, config.embedding_size)
         self.blocks = nn.Sequential(*[CasualAttentionBlock(config) for _ in range(config.num_blocks)])
         self.final_layer_norm = nn.LayerNorm(config.embedding_size)
-        self.reproject_to_vocab = nn.Linear(config.embedding_size, config.vocab_size)
+        self.lm_head = nn.Linear(config.embedding_size, config.vocab_size)
+
         self.apply(self._init_weights)
         self.context_length = config.context_length
         self.device = utils.get_auto_device() if config.device == "auto" else config.device
@@ -49,7 +50,7 @@ class GPT(nn.Module):
         x = token_embedding + position_embedding  # (B, T, C)
         x = self.blocks(x)  # (B, T, C)
         x = self.final_layer_norm(x)  # (B, T, C)
-        logits = self.reproject_to_vocab(x)  # (B, T, vocab_size)
+        logits = self.lm_head(x)  # (B, T, vocab_size)
         loss = (
             None
             if targets is None
