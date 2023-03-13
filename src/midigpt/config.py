@@ -31,7 +31,10 @@ class TrainConfigure(ModelConfigure):
     eval_iters: int = 200
     eval_interval: int = 500
     num_epochs: int = 3
-    batches_per_epoch: Optional[int] = None
     checkpoint_path: Union[str, Path] = Path("checkpoints")
     save_all_checkpoints: bool = False
     overwrite_checkpoints: bool = True
+
+    @property
+    def model_config(self):
+        return ModelConfigure(**{k: v for k, v in self.dict().items() if k in ModelConfigure.__fields__})
