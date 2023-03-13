@@ -9,13 +9,6 @@ from .config import ModelConfigure
 __all__ = ["CasualMultiHeadAttention", "CasualAttentionBlock", "FeedForward"]
 
 
-class GELU(nn.Module):
-    """GELU activation function: https://arxiv.org/abs/1606.08415"""
-
-    def forward(self, x):
-        return 0.5 * x * (1.0 + torch.tanh(math.sqrt(2.0 / math.pi) * (x + 0.044715 * torch.pow(x, 3.0))))
-
-
 class CasualMultiHeadAttention(nn.Module):
     def __init__(self, config: ModelConfigure) -> None:
         super().__init__()
@@ -48,6 +41,13 @@ class CasualMultiHeadAttention(nn.Module):
         output = self.output_projection(attended_values)
         output = self.embed_dropout(output)
         return output
+
+
+class GELU(nn.Module):
+    """GELU activation function: https://arxiv.org/abs/1606.08415"""
+
+    def forward(self, x):
+        return 0.5 * x * (1.0 + torch.tanh(math.sqrt(2.0 / math.pi) * (x + 0.044715 * torch.pow(x, 3.0))))
 
 
 class FeedForward(nn.Module):
