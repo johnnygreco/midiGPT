@@ -45,9 +45,7 @@ class Trainer:
                     "batch_num": batch_num,
                     "loss": loss,
                     "train_config": self.config.dict(),
-                    "model_config": {
-                        k: v for k, v in self.config.dict().items() if k in ModelConfigure.__fields__.keys()
-                    },
+                    "model_config": self.config.model_config.dict(),
                     "model_state_dict": self.model.state_dict(),
                     "optimizer_state_dict": self.optimizer.state_dict(),
                 },
@@ -69,26 +67,37 @@ class Trainer:
         return trainer
 
     def train(self, dataset: DatasetType, shuffle: bool = True):
+
         self.train_loader = DataLoader(dataset=dataset, batch_size=self.config.batch_size, shuffle=shuffle)
-        batches_per_epoch = self.config.batches_per_epoch if self.config.batches_per_epoch else len(self.train_loader)
-        total_iterations = self.config.num_epochs * batches_per_epoch
+        total_iterations = self.config.num_epochs * len(self.train_loader)
+
         with tqdm(total=total_iterations, desc=f"Training for {self.config.num_epochs} epochs:") as progress_bar:
-            lowest_loss = float("inf")
+
             self.model.train()
+            lowest_loss = float("inf")
+
             for epoch in range(1, self.config.num_epochs + 1):
-                running_loss_epoch = 0.0
-                running_loss_batch_interval = 0.0
+                running_loss = {"epoch": 0.0, "batch_interval": 0.0}
                 for batch_num, (x, y) in enumerate(self.train_loader, start=1):
                     x, y = x.to(self.device), y.to(self.device)
+
+                    # perform forward pass
                     _, self.loss = self.model(x, y)
+
+                    # perform backpropagation
                     self.optimizer.zero_grad(set_to_none=True)
                     self.loss.backward()
                     self.optimizer.step()
-                    running_loss_epoch += self.loss.item()
-                    running_loss_batch_interval += self.loss.item()
+
+                    # update loss logging variables
+                    running_loss["epoch"] += self.loss.item()
+                    running_loss["batch_interval"] += self.loss.item()
                     self._loss_history.append(self.loss.item())
+
+                    # log average batch loss and save checkpoint if at eval interval
                     if batch_num % self.config.eval_interval == 0:
-                        average_loss = running_loss_batch_interval / self.config.eval_interval
+                        average_loss = running_loss["batch_interval"] / self.config.eval_interval
+                        running_loss["batch_interval"] = 0.0
                         tqdm.write(
                             f"epoch: {epoch:<4.0f}  |  "
                             f"batch: {batch_num:<7.0f}  |  "
@@ -96,9 +105,11 @@ class Trainer:
                         )
                         lowest_loss = self._save_model_if_best(epoch, batch_num, average_loss, lowest_loss)
                         self._save_loss_history()
-                        running_loss_batch_interval = 0.0
+
                     progress_bar.update(1)
-                    if self.config.batches_per_epoch and batch_num > self.config.batches_per_epoch:
-                        break
-                lowest_loss = self._save_model_if_best(epoch, batch_num, running_loss_epoch / batch_num, lowest_loss)
+
+                # log epoch loss and save checkpoint
+                average_loss = running_loss["epoch"] / len(self.train_loader)
+                tqdm.write(f"epoch: {epoch:<4.0f} complete  ->  average epoch loss: {average_loss:<.4f}")
+                lowest_loss = self._save_model_if_best(epoch, batch_num, average_loss, lowest_loss)
                 self._save_loss_history()
