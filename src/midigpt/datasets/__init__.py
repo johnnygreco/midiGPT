@@ -1,5 +1,6 @@
-from typing import Type
+from typing import Type, Union
 
+from .tetrad import TetradNoteDataset
 from .text_character import TextCharacterDataset, TextCharacterTokenizer
 
-DatasetType = Type[TextCharacterDataset]
+DatasetType = Union[Type[TetradNoteDataset], Type[TextCharacterDataset]]

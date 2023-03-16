@@ -68,6 +68,7 @@ class Trainer:
 
     def train(self, dataset: DatasetType, shuffle: bool = True):
 
+        assert dataset.context_length == self.config.context_length, "Dataset context length must match trainer config."
         self.train_loader = DataLoader(dataset=dataset, batch_size=self.config.batch_size, shuffle=shuffle)
         total_iterations = self.config.num_epochs * len(self.train_loader)
 

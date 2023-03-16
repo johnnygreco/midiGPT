@@ -4,8 +4,6 @@ from typing import List, Union
 import torch
 from torch.utils.data import Dataset
 
-from ..config import ModelConfigure, TrainConfigure
-
 __all__ = ["TextCharacterDataset", "TextCharacterTokenizer"]
 
 
@@ -35,11 +33,11 @@ class TextCharacterTokenizer:
 
 
 class TextCharacterDataset(Dataset):
-    def __init__(self, text_corpus: str, vocabulary: List[str], config: Union[ModelConfigure, TrainConfigure]):
+    def __init__(self, text_corpus: str, vocabulary: List[str], context_length: int):
         self.text_corpus = text_corpus
         self.vocabulary = vocabulary
         self.vocab_size = len(self.vocabulary)
-        self.context_length = config.context_length
+        self.context_length = context_length
         self.tokenizer = TextCharacterTokenizer(vocabulary)
 
     def __len__(self):
