@@ -1,9 +1,9 @@
 import warnings
 from pathlib import Path
-from typing import Union
+from typing import Optional, Union
 
 import torch
-from torch.utils.data import DataLoader
+from torch.utils.data import DataLoader, Subset
 from tqdm.rich import tqdm
 from tqdm.std import TqdmExperimentalWarning
 
@@ -26,6 +26,7 @@ class Trainer:
         self.device = utils.get_auto_device() if config.device == "auto" else config.device
         self.model.to(self.device)
         self._loss_history = []
+        self._validation_loader = None
 
     def _save_loss_history(self):
         with open(self.checkpoint_path / "loss_history.txt", "a") as f:
@@ -53,6 +54,33 @@ class Trainer:
             )
         return lowest_loss
 
+    @torch.no_grad()
+    def _print_epoch_loss(self, epoch: int, average_train_loss: float):
+        if self._validation_loader is None:
+            tqdm.write(f"***** epoch: {epoch} complete  ->  average train loss: {average_train_loss:<.4f} *****")
+        else:
+            self.model.eval()
+            average_valid_loss = 0.0
+            for _ in range(self.config.batches_per_eval):
+                x, y = next(iter(self._validation_loader))
+                x, y = x.to(self.device), y.to(self.device)
+                _, loss = self.model(x, y)
+                average_valid_loss += loss.item() / self.config.batches_per_eval
+            self.model.train()
+            tqdm.write(
+                f"***** epoch: {epoch}  complete  ->  "
+                f"average train loss: {average_train_loss:<.4f}  |  "
+                f"average validation loss: {average_valid_loss:<.4f} *****"
+            )
+
+    def _check_context_length(self, dataset: DatasetType, name: str):
+        if isinstance(dataset, Subset):
+            context_length = dataset.dataset.context_length
+        else:
+            context_length = dataset.context_length
+        if context_length != self.config.context_length:
+            raise ValueError(f"{name} {context_length=} does not match {self.config.context_length=}")
+
     @classmethod
     def from_checkpoint(cls, path: Union[str, Path]):
         checkpoint = torch.load(path)
@@ -66,11 +94,15 @@ class Trainer:
         trainer.optimizer.load_state_dict(checkpoint["optimizer_state_dict"])
         return trainer
 
-    def train(self, dataset: DatasetType, shuffle: bool = True):
-
-        assert dataset.context_length == self.config.context_length, "Dataset context length must match trainer config."
+    def train(self, dataset: DatasetType, validation_dataset: Optional[DatasetType] = None, shuffle: bool = True):
+        self._check_context_length(dataset, "training dataset")
         self.train_loader = DataLoader(dataset=dataset, batch_size=self.config.batch_size, shuffle=shuffle)
         total_iterations = self.config.num_epochs * len(self.train_loader)
+        if validation_dataset is not None:
+            self._check_context_length(validation_dataset, "validation dataset")
+            self._validation_loader = DataLoader(
+                dataset=validation_dataset, batch_size=self.config.batch_size, shuffle=True
+            )
 
         with tqdm(total=total_iterations, desc=f"Training for {self.config.num_epochs} epochs:") as progress_bar:
 
@@ -111,6 +143,6 @@ class Trainer:
 
                 # log epoch loss and save checkpoint
                 average_loss = running_loss["epoch"] / len(self.train_loader)
-                tqdm.write(f"epoch: {epoch:<4.0f} complete  ->  average epoch loss: {average_loss:<.4f}")
+                self._print_epoch_loss(epoch, average_loss)
                 lowest_loss = self._save_model_if_best(epoch, batch_num, average_loss, lowest_loss)
                 self._save_loss_history()

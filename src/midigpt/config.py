@@ -28,7 +28,7 @@ class ModelConfigure(BaseModel):
 class TrainConfigure(ModelConfigure):
     batch_size: int = 32
     learning_rate: float = 5e-4
-    eval_iters: int = 200
+    batches_per_eval: int = 100
     eval_interval: int = 500
     num_epochs: int = 3
     checkpoint_path: Union[str, Path] = Path("checkpoints")

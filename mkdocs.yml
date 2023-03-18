@@ -1,0 +1,24 @@
+site_name: midiGPT
+
+theme:
+  name: material
+  icon:
+    logo: material/piano
+    repo: fontawesome/brands/github-alt
+  palette:
+    primary: white
+
+repo_url: https://github.com/johnnygreco/midiGPT
+
+markdown_extensions:
+  - pymdownx.highlight:
+      use_pygments: true
+  - pymdownx.emoji:
+      emoji_index: !!python/name:materialx.emoji.twemoji
+      emoji_generator: !!python/name:materialx.emoji.to_svg
+  - pymdownx.superfences
+  - attr_list
+
+plugins:
+  - mkdocstrings
+
