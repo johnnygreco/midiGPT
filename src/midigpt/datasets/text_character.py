@@ -40,6 +40,12 @@ class TextCharacterDataset(Dataset):
         self.context_length = context_length
         self.tokenizer = TextCharacterTokenizer(vocabulary)
 
+    @classmethod
+    def from_file(cls, file_path: Union[str, Path], vocabulary: List[str], context_length: int):
+        with open(file_path, "r") as f:
+            text_corpus = f.read()
+        return cls(text_corpus, vocabulary, context_length)
+
     def __len__(self):
         return len(self.text_corpus) - self.context_length
 

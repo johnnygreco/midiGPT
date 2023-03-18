@@ -1,22 +1,20 @@
-"""
-Following Karpathy's minGPT, train on the Tiny Shakespeare dataset for development.
-- minGPT repo: https://github.com/karpathy/minGPT
-- Tiny Shakespeare dataset: https://raw.githubusercontent.com/karpathy/char-rnn/master/data/tinyshakespeare/input.txt
-"""
-from pathlib import Path
-
 from midigpt import TrainConfigure, Trainer
-from midigpt.datasets import TextCharacterDataset
+from midigpt.datasets import TextCharacterDataset, TextCharacterTokenizer
 
-REPO_PATH = Path(__file__).parent.parent.parent
+corpus_file_path = "tiny-shakespeare.txt"
+tokenizer = TextCharacterTokenizer.from_file(corpus_file_path)
 
-with open(REPO_PATH / "local_data/tiny-shakespeare.txt", "r") as f:
-    corpus = f.read()
+config = TrainConfigure(
+    vocab_size=tokenizer.vocab_size,
+    context_length=128,
+    embedding_size=128,
+    num_epochs=5,
+    batch_size=120,
+    num_heads=8,
+    num_blocks=5,
+)
 
-vocabulary = sorted(list(set(corpus)))
-config = TrainConfigure(vocab_size=len(vocabulary), context_length=128, embedding_size=128, num_epochs=2, batch_size=96)
-
-dataset = TextCharacterDataset(corpus, vocabulary, config)
+dataset = TextCharacterDataset.from_file(corpus_file_path, tokenizer.vocabulary, config.context_length)
 trainer = Trainer(config)
 
 trainer.train(dataset)
