@@ -5,14 +5,12 @@ import pandas as pd
 from midigpt import TrainConfigure, Trainer
 from midigpt.datasets import BachChoraleDataset
 
-REPO_PATH = Path(__file__).parent.parent.parent
-
 
 def load_chorales(file_paths):
     return [pd.read_csv(p).values.tolist() for p in file_paths]
 
 
-jsb_chorales_path = Path(REPO_PATH / "local_data/midi/jsb_chorales")
+jsb_chorales_path = Path("jsb_chorales")
 train_chorales = load_chorales(sorted(jsb_chorales_path.glob("train/chorale_*.csv")))
 test_chorales = load_chorales(sorted(jsb_chorales_path.glob("test/chorale_*.csv")))
 train_chorales = train_chorales + test_chorales
@@ -28,13 +26,14 @@ assert train_dataset.vocab_size == validation_dataset.vocab_size
 config = TrainConfigure(
     vocab_size=train_dataset.vocab_size,
     context_length=train_dataset.context_length,
-    embedding_size=8,
+    embedding_size=64,
     num_heads=8,
-    num_blocks=16,
-    num_epochs=3,
+    num_blocks=12,
+    num_epochs=5,
     batch_size=96,
     attn_dropout_prob=0.1,
     embed_dropout_prob=0.1,
+    learning_rate=5e-4,
 )
 
 trainer = Trainer(config)
