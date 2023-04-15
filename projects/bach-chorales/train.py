@@ -1,11 +1,9 @@
-import math
 from pathlib import Path
 
 import pandas as pd
-from torch.utils.data import Subset
 
 from midigpt import TrainConfigure, Trainer
-from midigpt.datasets import TetradNoteDataset
+from midigpt.datasets import BachChoraleDataset
 
 REPO_PATH = Path(__file__).parent.parent.parent
 
@@ -16,32 +14,31 @@ def load_chorales(file_paths):
 
 jsb_chorales_path = Path(REPO_PATH / "local_data/midi/jsb_chorales")
 train_chorales = load_chorales(sorted(jsb_chorales_path.glob("train/chorale_*.csv")))
-valid_chorales = load_chorales(sorted(jsb_chorales_path.glob("valid/chorale_*.csv")))
 test_chorales = load_chorales(sorted(jsb_chorales_path.glob("test/chorale_*.csv")))
+train_chorales = train_chorales + test_chorales
+valid_chorales = load_chorales(sorted(jsb_chorales_path.glob("valid/chorale_*.csv")))
 
-train_fraction = 0.9
+
 context_length = 128
+train_dataset = BachChoraleDataset(train_chorales, context_length=context_length)
+validation_dataset = BachChoraleDataset(valid_chorales, context_length=context_length)
 
-dataset = TetradNoteDataset(train_chorales, context_length=context_length)
-indices = list(range(len(dataset)))
-
-split_idx = math.floor(train_fraction * len(dataset))
-train_indices, valid_indices = indices[:split_idx], indices[split_idx:]
-
-
-train_dataset = Subset(dataset, train_indices)
-validation_dataset = Subset(dataset, valid_indices)
+assert train_dataset.vocab_size == validation_dataset.vocab_size
 
 config = TrainConfigure(
-    vocab_size=dataset.vocab_size,
-    context_length=dataset.context_length,
-    embedding_size=16,
-    num_epochs=2,
+    vocab_size=train_dataset.vocab_size,
+    context_length=train_dataset.context_length,
+    embedding_size=8,
+    num_heads=8,
+    num_blocks=16,
+    num_epochs=3,
     batch_size=96,
-    attn_dropout_prob=0.2,
-    embed_dropout_prob=0.2,
+    attn_dropout_prob=0.1,
+    embed_dropout_prob=0.1,
 )
 
 trainer = Trainer(config)
+
+print(f"{trainer.model.num_params} model parameters")
 
 trainer.train(train_dataset, validation_dataset=validation_dataset)

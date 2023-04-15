@@ -1,6 +1,6 @@
 # 📜 Tiny Shakespeare
 
-To test `midiGPT` during the development, I trained the model on [Andrej Karpathy](https://karpathy.ai)'s [Tiny Shakespeare Dataset](https://github.com/karpathy/char-rnn/blob/master/data/tinyshakespeare/input.txt). The training script is contained in [train.py](train.py) in this directory.
+To test `midiGPT` during the development, I trained the model on [Andrej Karpathy](https://karpathy.ai)'s [Tiny Shakespeare Dataset](https://github.com/karpathy/char-rnn/blob/master/data/tinyshakespeare/input.txt). The training script is contained in [train.py](train.py).
 
 ## Loss History
 <img src="loss_history.png" width=80% height=80%>
