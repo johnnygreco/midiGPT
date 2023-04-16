@@ -11,8 +11,8 @@ I trained a GPT model to generate new Bach Chorales by predicting the next note 
 
 Here are some example generations that are seeded with two chords from a random Bach Chorale from the test set. 
 
-- ♫ [temperature = 0.5](generated-bach-0.5.wav)
+♫ [temperature = 0.5](https://user-images.githubusercontent.com/10998105/232264858-a13f98a8-5159-4215-9d23-b3c9bb98de28.mp4)
 
-- ♬ [temperature = 1.5](generated-bach-1.5.wav)
+♬ [temperature = 1.5](https://user-images.githubusercontent.com/10998105/232264882-13c95d6e-a7a6-45fb-b423-4fd8929dc215.mp4)
 
-- 🎶 [temperature = 1.8](generated-bach-1.8.wav)
+🎶 [temperature = 1.8](https://user-images.githubusercontent.com/10998105/232264893-2426c93d-401c-4191-9154-c9ef8f61c27e.mp4)
