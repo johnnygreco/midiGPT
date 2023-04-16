@@ -36,8 +36,8 @@ class GPT(nn.Module):
         return sum(p.numel() for p in self.parameters())
 
     @classmethod
-    def from_checkpoint(cls, path: Union[str, Path]):
-        checkpoint = torch.load(path)
+    def from_checkpoint(cls, path: Union[str, Path], **kwargs):
+        checkpoint = torch.load(path, **kwargs)
         config = checkpoint["model_config"]
         model = cls(ModelConfigure(**config))
         model.load_state_dict(checkpoint["model_state_dict"])
@@ -79,7 +79,7 @@ class GPT(nn.Module):
             # forward the model to get the logits for the index in the sequence
             logits, _ = self(idx_cond)
             # pluck the logits at the final step and scale by desired temperature
-            logits = logits[:, -1, :] / temperature
+            logits = logits[:, -1, :] / (temperature + 1e-8)
             # optionally crop the logits to only the top k options
             if top_k is not None:
                 logits[logits < torch.topk(logits, top_k)[0][:, [-1]]] = -float("Inf")

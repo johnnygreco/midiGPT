@@ -1,23 +1,23 @@
 # 🎹 midiGPT
 
-Inspired by Andrej Karpathy's [minGPT](https://github.com/karpathy/minGPT), I am building `midiGPT` as a learning-in-public (LIP) project. The goal is to build a library that makes it easy to train a decoder-only transformer model (similar to GPT) on MIDI data. 
+Inspired by Andrej Karpathy's [minGPT](https://github.com/karpathy/minGPT), I am building `midiGPT` as a **learning-in-public** project. The goal is to build a from-scratch PyTorch implementation of decoder-only transformer model (similar to GPT) on MIDI data. 
 
-<br>
-<br>
+# Mini Projects
+The [projects](projects) directory contains simple example applications of `midiGPT`.
 
-# 🚧 Under Construction 🚧
+## 🎼 Bach Chorales
+- [projects/bach-chorales](projects/bach-chorales)
+- [example generation](projects/bach-chorales/generated-bach-0.5.wav) with temperature = 0.5
 
-<br>
-<br>
-<br>
-<br>
-<br>
-
-### 📝 Notes
-To use pyfluidsynth with pretty_midi, I had to brew install fluidsynth and create a symlink to the library:
-
-```bash
-brew install fluidsynth
-
-ln -s /opt/homebrew/opt/fluidsynth/lib/libfluidsynth.dylib /opt/homebrew/Caskroom/miniforge/base/envs/midiGPT/lib/libfluidsynth.dylib
+## 📜 Tiny Shakespeare
+- [projects/tiny-shakespeare](projects/tiny-shakespeare)
+- example generation:
+```
+KING JOHNNY:
+To be, or not to be: that is the question.
+Gentlemen, give me the clothes to wail,
+And what I am to receive: to resist this war
+To bear himself of God, my worship forth;
+Have caught up my state, which have we stood
+To take enforce the stones?
 ```
