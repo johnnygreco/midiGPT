@@ -1,6 +1,6 @@
 # 🎹 midiGPT
 
-Inspired by Andrej Karpathy's [minGPT](https://github.com/karpathy/minGPT), I am building `midiGPT` as a **learning-in-public** project. The goal is to build a from-scratch PyTorch implementation of decoder-only transformer model (similar to GPT) on MIDI data. 
+Inspired by Andrej Karpathy's [minGPT](https://github.com/karpathy/minGPT), I am building `midiGPT` as a **learning-in-public** project. The goal is to build a from-scratch PyTorch implementation of a decoder-only transformer model (similar to GPT) that generates music as MIDI data. 
 
 # Mini Projects
 The [projects](projects) directory contains simple example applications of `midiGPT`.
