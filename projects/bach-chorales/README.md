@@ -1,6 +1,8 @@
 # 🎼 Bach Chorales
 
-The Bach Chorales dataset consists of 382 chorales composed by Johann Sebastian Bach. Each chorale is 100 to 640 time steps long, where each time step contains 4 integers that correspond to a note's index on a piano (except for the value 0, which corresponds to a rest).
+This mini project was inspired by an exercise in Aurélien Geron's **amazing** book [Hands-On Machine Learning with Scikit-Learn and TensorFlow](https://www.amazon.com/Hands-Machine-Learning-Scikit-Learn-TensorFlow-dp-1098125975/dp/1098125975/ref=dp_ob_title_bk).
+
+The [Bach Chorales dataset](jsb_chorales/) consists of 382 chorales composed by Johann Sebastian Bach. Each chorale is 100-640 time steps long, where each time step contains 4 integers that correspond to a note's index on a piano (except for the value 0, which corresponds to a rest).
 
 I trained a GPT model to generate new Bach Chorales by predicting the next note in sequences of arpeggios. The final model has 24 self-attention blocks, each consisting of 8 attention heads and an embedding size of 64, with a total of 622,383 model parameters.
 
