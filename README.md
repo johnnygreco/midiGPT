@@ -9,7 +9,7 @@ The [projects](projects) directory contains simple example applications of `midi
 - [projects/bach-chorales](projects/bach-chorales)
 - example generation with temperature = 0.5:
 
-<video src="assets/bach-and-his-laptop.mp4" width=500/></video> 
+https://user-images.githubusercontent.com/10998105/232320387-aaefc15a-f1ab-4d89-be8c-ba261d2b959f.mp4
 
 ## 📜 Tiny Shakespeare
 - [projects/tiny-shakespeare](projects/tiny-shakespeare)
