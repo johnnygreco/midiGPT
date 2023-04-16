@@ -16,8 +16,7 @@ test_chorales = load_chorales(sorted(jsb_chorales_path.glob("test/chorale_*.csv"
 train_chorales = train_chorales + test_chorales
 valid_chorales = load_chorales(sorted(jsb_chorales_path.glob("valid/chorale_*.csv")))
 
-
-context_length = 128
+context_length = 256
 train_dataset = BachChoraleDataset(train_chorales, context_length=context_length)
 validation_dataset = BachChoraleDataset(valid_chorales, context_length=context_length)
 
@@ -28,8 +27,8 @@ config = TrainConfigure(
     context_length=train_dataset.context_length,
     embedding_size=64,
     num_heads=8,
-    num_blocks=24,
-    num_epochs=5,
+    num_blocks=12,
+    num_epochs=4,
     batch_size=96,
     attn_dropout_prob=0.1,
     embed_dropout_prob=0.1,
